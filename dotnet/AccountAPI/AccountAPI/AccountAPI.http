@@ -1,0 +1,7 @@
+@AccountAPI_HostAddress = http://localhost:5260
+
+GET {{AccountAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+//https://localhost:7244/swagger/index.html
