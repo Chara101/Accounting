@@ -22,11 +22,6 @@ namespace AccountAPI.Controllers
             result = _db.GetAllRecords();
             return result;
         }
-        [HttpGet("login")]
-        public string Login([FromQuery] int id, string password)
-        {
-            return "Login Success";
-        }
 
         [HttpGet("search/GetRecord")]
         public IEnumerable<RecordForm> GetRecord([FromQuery] RecordForm r)
