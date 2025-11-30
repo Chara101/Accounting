@@ -3,9 +3,8 @@
 
 | 目的  | http方法 | 請求 | 回傳 |
 | --- | ------ | ---- | ---- |
-| GetAllRecords | Get | 無 | 格式：json;
-欄位：id, date, category_id, category, subCategory_id, subcategory, amount, comment; | 
-| GetRecord | Get | 
+| GetAllRecords | Get | 無 | 格式：json;欄位：id, date, category_id, category, subCategory_id, subcategory, amount, comment; | 
+| GetRecord | Get | | 同GetAllRecords |
 | GetRecordInRange
 | GetTotals
 | GetTotalsBy
