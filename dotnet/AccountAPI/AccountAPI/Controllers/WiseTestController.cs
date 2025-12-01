@@ -31,8 +31,8 @@ namespace AccountAPI.Controllers
             return result;
         }
         
-        [HttpPost("search/GetRecordInRange")]
-        public IEnumerable<RecordForm> GetRecordInRange([FromBody] BandRecord r)
+        [HttpGet("search/GetRecordInRange")]
+        public IEnumerable<RecordForm> GetRecordInRange([FromQuery] BandRecord r)
         {
             List<RecordForm> result = new List<RecordForm>();
             result = _db.GetRecordsBy(r.r1, r.r2);
@@ -46,15 +46,15 @@ namespace AccountAPI.Controllers
             result = _db.GetAllTotals();
             return result;
         }
-        [HttpPost("search/GetTotalsBy")]
-        public List<RecordForm> GetTotalsBy([FromBody] RecordForm r)
+        [HttpGet("search/GetTotalsBy")]
+        public List<RecordForm> GetTotalsBy([FromQuery] RecordForm r)
         {
             List<RecordForm> result = new List<RecordForm>();
             result = _db.GetTotals(r);
             return result;
         }
-        [HttpPost("search/GetTotalsInRange")]
-        public List<RecordForm> GetTotalsInRange([FromBody] BandRecord r)
+        [HttpGet("search/GetTotalsInRange")]
+        public List<RecordForm> GetTotalsInRange([FromQuery] BandRecord r)
         {
             List<RecordForm> result = new List<RecordForm>();
             result = _db.GetTotals(r.r1, r.r2);
