@@ -1,35 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// /src/App.tsx
 
-function App() {
-  const [count, setCount] = useState(0)
+import React, { useState } from 'react';
+import RecordList from './components/RecordList';
+import AddRecordForm from './components/AddRecordForm';
+
+const App: React.FC = () => {
+  const [key, setKey] = useState(0); // 用來強制 RecordList 重新載入
+
+  const handleRecordAdded = () => {
+    // 當新增紀錄成功時，更新 key，讓 RecordList 重新載入數據
+    setKey(prevKey => prevKey + 1);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
+      <h1>💸 React + TypeScript 記帳本</h1>
+      <AddRecordForm onRecordAdded={handleRecordAdded} />
+      <hr />
+      {/* 使用 key 屬性來實現數據刷新 */}
+      <RecordList key={key} /> 
+    </div>
+  );
+};
 
-export default App
+export default App;
