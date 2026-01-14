@@ -1,11 +1,7 @@
-// /src/types/index.ts
-
-/**
- * 帳單紀錄的資料結構 (來自 GetAllRecords 的回傳)
- */
+// 定義 API 回傳的帳單紀錄介面
 export interface AccountingRecord {
   id: number;
-  date: string; // 建議使用 string 或 Date 類型，具體取決於後端格式
+  date: string; // ISO 格式或 YYYY-MM-DD
   category_id: number;
   category: string;
   subCategory_id: number;
@@ -14,28 +10,22 @@ export interface AccountingRecord {
   comment: string;
 }
 
-/**
- * 新增帳單所需的資料結構 (給 AddObject 的請求)
- */
+// 定義新增帳單時傳送的資料結構
 export interface NewRecordPayload {
   category_id: number;
   subcategory_id: number;
-  user_id: number; // 假設 user_id 也是必需的
+  user_id: number;
   amount: number;
   comment: string;
 }
 
-/**
- * 科目資料結構 (來自 GetAllCategories 的回傳)
- */
+// 定義科目
 export interface Category {
   category_id: number;
   category: string;
 }
 
-/**
- * 子科目資料結構 (來自 GetAllSubCategories 的回傳)
- */
+// 定義子科目
 export interface SubCategory {
   subcategory_id: number;
   subcategory: string;

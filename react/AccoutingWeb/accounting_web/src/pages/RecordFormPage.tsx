@@ -51,20 +51,19 @@ const RecordFormPage: React.FC = () => {
         if (isEditMode && id) {
           const record = await getRecordById(Number(id));
           if (record) {
-            // ✅ 修改後的寫法：明確指定欄位對應
             setFormData({
-            id: record.id,
-            date: record.date.includes('T') ? record.date.split('T')[0] : record.date,
-            amount: record.amount,
-            comment: record.comment,
-            category: record.category,
-            category_id: record.category_id,
-            
-            // 關鍵修正：將後端的 subCategory_id 對應給前端 state 的 subcategory_id
-            subcategory_id: record.subCategory_id, 
-            subcategory: record.subcategory,
-            
-            user_id: 1
+                id: record.id,
+                date: record.date.includes('T') ? record.date.split('T')[0] : record.date,
+                amount: record.amount,
+                comment: record.comment,
+                category: record.category,
+                category_id: record.category_id,
+                
+                // 關鍵修正：將後端的 subCategory_id 對應給前端 state 的 subcategory_id
+                subcategory_id: record.subCategory_id, 
+                subcategory: record.subcategory,
+                
+                user_id: 1
             });
           }
         }
