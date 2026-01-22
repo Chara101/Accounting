@@ -5,7 +5,6 @@ import {
   InputLabel, Box, Typography, Paper 
 } from '@mui/material';
 
-// 引入 API 與型別
 import { 
   addRecord, renewRecord, getRecordById, 
   getAllCategories, getAllSubCategories 
@@ -13,33 +12,28 @@ import {
 import type { Category, SubCategory, AccountingRecord } from '../types';
 
 const RecordFormPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // 取得 URL 參數
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
 
-  // 表單狀態
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0], // 預設今天 (YYYY-MM-DD)
+    date: new Date().toLocaleDateString('en-CA'), // 修正：使用本地時間格式 YYYY-MM-DD
     category_id: '' as unknown as number,
     subcategory_id: '' as unknown as number,
     amount: '' as unknown as number,
     comment: '',
-    user_id: 1, // 預設使用者 ID
-    // 以下欄位用於編輯模式的回填與 API 需求
+    user_id: 1,
     id: 0,
     category: '',
     subcategory: ''
   });
 
-  // 下拉選單選項
   const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
 
-  // 載入初始資料
   useEffect(() => {
     const initData = async () => {
       try {
-        // 平行載入科目與子科目
         const [cats, subs] = await Promise.all([
           getAllCategories(), 
           getAllSubCategories()
@@ -47,23 +41,19 @@ const RecordFormPage: React.FC = () => {
         setCategories(cats);
         setSubCategories(subs);
 
-        // 如果是編輯模式，載入該筆紀錄
         if (isEditMode && id) {
           const record = await getRecordById(Number(id));
           if (record) {
             setFormData({
-                id: record.id,
-                date: record.date.includes('T') ? record.date.split('T')[0] : record.date,
-                amount: record.amount,
-                comment: record.comment,
-                category: record.category,
-                category_id: record.category_id,
-                
-                // 關鍵修正：將後端的 subCategory_id 對應給前端 state 的 subcategory_id
-                subcategory_id: record.subCategory_id, 
-                subcategory: record.subcategory,
-                
-                user_id: 1
+              id: record.id,
+              date: record.date.includes('T') ? record.date.split('T')[0] : record.date,
+              amount: record.amount,
+              comment: record.comment,
+              category: record.category,
+              category_id: record.category_id,
+              subcategory_id: record.subCategory_id, // 確保這裡對應正確 (API 回傳是大寫 C)
+              subcategory: record.subcategory,
+              user_id: 1
             });
           }
         }
@@ -77,7 +67,6 @@ const RecordFormPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 整理要傳送的資料
     const basePayload = {
       date: formData.date,
       category_id: Number(formData.category_id),
@@ -88,38 +77,44 @@ const RecordFormPage: React.FC = () => {
 
     try {
       if (isEditMode) {
-        // 呼叫更新 API (Renew)
-        // 注意：這裡假設 Renew API 需要完整的 AccountingRecord 結構
         await renewRecord({
           ...basePayload,
           id: Number(id),
-          user_id: formData.user_id, // 雖然 TypeScript 介面沒定義 user_id 在 AccountingRecord，但有些後端需要
+          user_id: formData.user_id,
           category: formData.category,
           subcategory: formData.subcategory
         } as unknown as AccountingRecord); 
       } else {
-        // 呼叫新增 API (AddObject)
         await addRecord({
           ...basePayload,
           user_id: formData.user_id,
         });
       }
-      // 成功後跳轉回首頁
       navigate('/');
     } catch (error) {
-      alert('儲存失敗，請檢查 API');
+      alert('儲存失敗');
     }
   };
 
   return (
-    <Paper elevation={3} sx={{ maxWidth: 500, mx: 'auto', p: 4, mt: 4 }}>
-      <Typography variant="h5" align="center" gutterBottom>
+    // RWD 調整重點：Paper 的 sx 屬性
+    <Paper 
+      elevation={3} 
+      sx={{ 
+        width: '100%',           // 預設 (手機) 佔滿寬度
+        maxWidth: { sm: 500 },   // 螢幕大於 sm (600px) 時，最大寬度 500px
+        mx: 'auto',              // 水平置中 (margin-left/right: auto)
+        p: { xs: 2, md: 4 },     // 手機版內距 16px，電腦版 32px
+        mt: 4,
+        borderRadius: 2          // 圓角好看一點
+      }}
+    >
+      <Typography variant="h5" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
         {isEditMode ? '修改紀錄' : '新增一筆消費'}
       </Typography>
 
-      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
         
-        {/* 日期欄位 */}
         <TextField
           label="日期"
           type="date"
@@ -130,7 +125,6 @@ const RecordFormPage: React.FC = () => {
           required
         />
 
-        {/* 科目下拉選單 */}
         <FormControl fullWidth required>
           <InputLabel>科目</InputLabel>
           <Select
@@ -148,7 +142,6 @@ const RecordFormPage: React.FC = () => {
           </Select>
         </FormControl>
 
-        {/* 子科目下拉選單 */}
         <FormControl fullWidth required>
           <InputLabel>子科目</InputLabel>
           <Select
@@ -160,25 +153,23 @@ const RecordFormPage: React.FC = () => {
               setFormData({...formData, subcategory_id: subId, subcategory: subName});
             }}
           >
-            {/* MVP 簡化：這裡顯示所有子科目，理想情況應根據 category_id 過濾 */}
+            {/* 未來可優化：根據 category_id 過濾顯示 */}
             {subCategories.map((s) => (
               <MenuItem key={s.subcategory_id} value={s.subcategory_id}>{s.subcategory}</MenuItem>
             ))}
           </Select>
         </FormControl>
 
-        {/* 金額欄位 */}
         <TextField
           label="金額"
           type="number"
           fullWidth
-          inputProps={{ step: "0.01" }} // 允許小數點
+          inputProps={{ step: "0.01" }}
           value={formData.amount}
           onChange={(e) => setFormData({...formData, amount: Number(e.target.value)})}
           required
         />
 
-        {/* 備註欄位 */}
         <TextField
           label="備註"
           fullWidth
@@ -188,20 +179,24 @@ const RecordFormPage: React.FC = () => {
           onChange={(e) => setFormData({...formData, comment: e.target.value})}
         />
 
-        {/* 送出按鈕 */}
-        <Button 
-          type="submit" 
-          variant="contained" 
-          size="large" 
-          sx={{ mt: 2, height: 50, fontSize: '1.1rem' }}
-        >
-          {isEditMode ? '儲存修改' : '新增紀錄'}
-        </Button>
-
-        {/* 取消按鈕 */}
-        <Button onClick={() => navigate('/')} color="inherit">
-          取消
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+          <Button 
+            onClick={() => navigate('/')} 
+            color="inherit" 
+            fullWidth
+            variant="outlined"
+          >
+            取消
+          </Button>
+          <Button 
+            type="submit" 
+            variant="contained" 
+            fullWidth 
+            size="large"
+          >
+            {isEditMode ? '儲存' : '新增'}
+          </Button>
+        </Box>
       </Box>
     </Paper>
   );

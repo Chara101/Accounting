@@ -1,4 +1,4 @@
-import type { AccountingRecord, NewRecordPayload, Category, SubCategory } from '../types';
+import type { AccountingRecord, NewRecordPayload, Category, SubCategory, CategoryRelation} from '../types';
 
 // 請確認您的後端 API 網址，若有不同請在此修改
 const API_BASE_URL = 'https://localhost:7244/api';
@@ -85,5 +85,46 @@ export const deleteRecord = (record: AccountingRecord): Promise<void> => {
   return apiFetch<void>('Delete', {
     method: 'DELETE',
     body: JSON.stringify(record),
+  });
+};
+
+// ==========================================
+// 科目管理 API
+// ==========================================
+
+// 1. 獲取科目與子科目的關聯
+export const getAllRelations = (): Promise<CategoryRelation[]> => {
+  return apiFetch<CategoryRelation[]>('GetAllCategoriesAndSub');
+};
+
+// 2. 新增主科目
+export const addCategory = (name: string): Promise<void> => {
+  return apiFetch<void>('AddCategory', {
+    method: 'POST',
+    body: JSON.stringify({ category: name }),
+  });
+};
+
+// 3. 刪除主科目
+export const deleteCategory = (id: number): Promise<void> => {
+  return apiFetch<void>('DeleteCategory', {
+    method: 'DELETE',
+    body: JSON.stringify({ category_id: id }),
+  });
+};
+
+// 4. 新增子科目 (需要指定掛在哪個主科目下)
+export const addSubCategory = (categoryId: number, name: string): Promise<void> => {
+  return apiFetch<void>('AddSubCategory', {
+    method: 'POST',
+    body: JSON.stringify({ category_id: categoryId, subcategory: name }),
+  });
+};
+
+// 5. 刪除子科目
+export const deleteSubCategory = (id: number): Promise<void> => {
+  return apiFetch<void>('DeleteSubCategory', {
+    method: 'DELETE',
+    body: JSON.stringify({ subcategory_id: id }),
   });
 };

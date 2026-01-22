@@ -30,3 +30,12 @@ export interface SubCategory {
   subcategory_id: number;
   subcategory: string;
 }
+// src/types/index.ts
+
+// ... (保留原本的 AccountingRecord, NewRecordPayload 等)
+
+// 新增：科目與子科目關聯表 (對應 API: GetAllCategoriesAndSub)
+export interface CategoryRelation {
+  category_id: number;
+  subcategory_id: number;
+}
