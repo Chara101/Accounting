@@ -17,7 +17,7 @@ namespace AccountAPI.Controllers
     {
         IDataStorage _db = new MssqlCtrl();
         // GET: api/<WiseTestController>
-        [HttpGet("search/GetAllRecord")]
+        [HttpGet("records/all")]
         public IActionResult GetAllRecord()
         {
             List<RecordForm> result = new List<RecordForm>();
@@ -32,21 +32,45 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpGet("search/GetRecord")]
-        public IActionResult GetRecord([FromQuery] RecordForm r)
+        [HttpGet("records/match")]
+        public IActionResult GetRecord([FromQuery] JsonElement data)
         {
             try
             {
-                List<RecordForm> result = _db.GetRecordsBy(r);
-                return Ok(result);
+                if(!data.TryGetProperty("Id", out JsonElement eid) 
+                    && !data.TryGetProperty("date", out JsonElement edate) 
+                    && !data.TryGetProperty("category_id", out JsonElement ecid)
+                    && !data.TryGetProperty("subcategory_id", out JsonElement escid)
+                    && !data.TryGetProperty("user_id", out JsonElement euid)
+                    && !data.TryGetProperty("amount", out JsonElement eamount))
+                    throw new ArgumentException("At least one search parameter must be provided.");
+                RecordForm r = new RecordForm //warning 要把jsonElement轉換與加入
+                {
+                    Id = eid.ValueKind == JsonValueKind.Number? eid.GetInt32() : 0,
+                    Date = edate.GetDateTime(),
+                    Category_id = ecid.Get
+                };
+                return Ok();
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-        
-        [HttpPost("search/GetRecordInRange")]
+        //public IActionResult GetRecord([FromQuery] RecordForm r)
+        //{
+        //    try
+        //    {
+        //        List<RecordForm> result = _db.GetRecordsBy(r);
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
+
+        [HttpPost("records/match/range")]
         public IActionResult GetRecordInRange([FromBody] BandRecord r)
         {
             try
@@ -60,7 +84,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpGet("search/GetAllTotals")]
+        [HttpGet("totals/all")]
         public IActionResult GetTotals()
         {
             try
@@ -73,7 +97,7 @@ namespace AccountAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("search/GetTotalsBy")]
+        [HttpPost("totals/match")]
         public IActionResult GetTotalsBy([FromBody] RecordForm r)
         {
             try
@@ -86,7 +110,7 @@ namespace AccountAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("search/GetTotalsInRange")]
+        [HttpPost("totals/match/range")]
         public IActionResult GetTotalsInRange([FromBody] BandRecord r)
         {
             try
@@ -100,7 +124,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpPost("add/AddObject")]
+        [HttpPost("record/add")]
         public IActionResult AddObject([FromBody] RecordForm value)
         {
             try
@@ -114,7 +138,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpPut("renew")]
+        [HttpPut("record/renew")]
         public IActionResult Renew([FromBody] BandRecord r)
         {
             try
@@ -129,7 +153,7 @@ namespace AccountAPI.Controllers
         }
 
         // DELETE api/<WiseTestController>/5
-        [HttpDelete("delete")]
+        [HttpDelete("record/delete")]
         public IActionResult Delete(int id)
         {
             try
@@ -143,7 +167,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpPost("Category/add")]
+        [HttpPost("category/add")]
         public IActionResult AddCategory([FromBody] JsonElement data)
         {
             try
@@ -162,7 +186,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpDelete("Category/delete")]
+        [HttpDelete("category/delete")]
         public IActionResult DeleteCategory(int id)
         {
             try
@@ -176,13 +200,15 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpPost("SubCategory/add")]
+        [HttpPost("subcategory/add")]
         public IActionResult AddSubCategory([FromBody] JsonElement data)
         {
             try
             {
-                if (!data.TryGetProperty("category_id", out JsonElement cid) || !data.TryGetProperty("subcategory", out JsonElement sc_name))
-                _db.AddSubCategory(cid, sc_name);
+                if (!data.TryGetProperty("category_id", out JsonElement cid) 
+                    && !data.TryGetProperty("subcategory", out JsonElement sc_name))
+                    throw new ArgumentException("Missing 'category_id' or 'subcategory' property in JSON data.");
+                _db.AddSubCategory(cid, sc_name); //warning 要對MssqlCtrl做修改 才能正確使用
                 return Ok();
             }
             catch(Exception ex)
@@ -191,7 +217,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpDelete("SubCategory/delete")]
+        [HttpDelete("subcategory/delete")]
         public IActionResult DeleteSubCategory(int id)
         {
             try
@@ -205,7 +231,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpGet("Category/getAll")]
+        [HttpGet("categories/all")]
         public IActionResult GetAllCategories()
         {
             try
@@ -219,7 +245,7 @@ namespace AccountAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("SubCategory/getAll")]
+        [HttpGet("subcategories/all")]
         public IActionResult GetAllSubCategories()
         {
             try
@@ -233,7 +259,7 @@ namespace AccountAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("CategoryAndSub/getAll")]
+        [HttpGet("relations/categoryAndSub")]
         public IActionResult GetAllCategoriesAndSub()
         {
             try
