@@ -1,7 +1,7 @@
 import type { AccountingRecord, NewRecordPayload, Category, SubCategory, CategoryRelation} from '../types';
 
 // 請確認您的後端 API 網址，若有不同請在此修改
-const API_BASE_URL = 'https://localhost:7244/api';
+const API_BASE_URL = 'https://localhost:7244/api/WiseTest';
 
 /**
  * 通用的 fetch 封裝函式，處理 JSON 轉換與錯誤拋出
@@ -37,17 +37,17 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
 
 // 獲取所有帳單紀錄
 export const getAllRecords = (): Promise<AccountingRecord[]> => {
-  return apiFetch<AccountingRecord[]>('GetAllRecords');
+  return apiFetch<AccountingRecord[]>('search/GetAllRecord');
 };
 
 // 獲取所有科目
 export const getAllCategories = (): Promise<Category[]> => {
-  return apiFetch<Category[]>('GetAllCategories');
+  return apiFetch<Category[]>('Category/getAll');
 };
 
 // 獲取所有子科目
 export const getAllSubCategories = (): Promise<SubCategory[]> => {
-  return apiFetch<SubCategory[]>('GetAllSubCategories');
+  return apiFetch<SubCategory[]>('SubCategory/getAll');
 };
 
 // 獲取單筆紀錄 (模擬：若後端 GetRecord 邏輯複雜，這裡我們先從全部資料中尋找)
@@ -64,7 +64,7 @@ export const getRecordById = async (id: number): Promise<AccountingRecord | unde
 
 // 新增帳單
 export const addRecord = (payload: NewRecordPayload): Promise<void> => {
-  return apiFetch<void>('AddObject', {
+  return apiFetch<void>('add/AddObject', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
@@ -73,7 +73,7 @@ export const addRecord = (payload: NewRecordPayload): Promise<void> => {
 // 更新帳單 (Renew)
 // 根據 API 規格，需要傳入完整的物件
 export const renewRecord = (record: AccountingRecord): Promise<void> => {
-  return apiFetch<void>('Renew', {
+  return apiFetch<void>('renew', {
     method: 'PUT',
     body: JSON.stringify(record),
   });
@@ -82,7 +82,7 @@ export const renewRecord = (record: AccountingRecord): Promise<void> => {
 // 刪除帳單
 // 根據 API 規格，Delete 是傳入 JSON Body 而非 URL 參數
 export const deleteRecord = (record: AccountingRecord): Promise<void> => {
-  return apiFetch<void>('Delete', {
+  return apiFetch<void>('delete', {
     method: 'DELETE',
     body: JSON.stringify(record),
   });
@@ -94,12 +94,12 @@ export const deleteRecord = (record: AccountingRecord): Promise<void> => {
 
 // 1. 獲取科目與子科目的關聯
 export const getAllRelations = (): Promise<CategoryRelation[]> => {
-  return apiFetch<CategoryRelation[]>('GetAllCategoriesAndSub');
+  return apiFetch<CategoryRelation[]>('CategoryAndSub/getAll');
 };
 
 // 2. 新增主科目
 export const addCategory = (name: string): Promise<void> => {
-  return apiFetch<void>('AddCategory', {
+  return apiFetch<void>('Category/add', {
     method: 'POST',
     body: JSON.stringify({ category: name }),
   });
@@ -107,7 +107,7 @@ export const addCategory = (name: string): Promise<void> => {
 
 // 3. 刪除主科目
 export const deleteCategory = (id: number): Promise<void> => {
-  return apiFetch<void>('DeleteCategory', {
+  return apiFetch<void>('Category/delete', {
     method: 'DELETE',
     body: JSON.stringify({ category_id: id }),
   });
@@ -115,7 +115,7 @@ export const deleteCategory = (id: number): Promise<void> => {
 
 // 4. 新增子科目 (需要指定掛在哪個主科目下)
 export const addSubCategory = (categoryId: number, name: string): Promise<void> => {
-  return apiFetch<void>('AddSubCategory', {
+  return apiFetch<void>('SubCategory/add', {
     method: 'POST',
     body: JSON.stringify({ category_id: categoryId, subcategory: name }),
   });
@@ -123,7 +123,7 @@ export const addSubCategory = (categoryId: number, name: string): Promise<void> 
 
 // 5. 刪除子科目
 export const deleteSubCategory = (id: number): Promise<void> => {
-  return apiFetch<void>('DeleteSubCategory', {
+  return apiFetch<void>('SubCategory/delete', {
     method: 'DELETE',
     body: JSON.stringify({ subcategory_id: id }),
   });

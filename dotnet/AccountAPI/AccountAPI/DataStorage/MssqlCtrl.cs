@@ -128,6 +128,7 @@ namespace AccountAPI.DataStorage
             catch (Exception e)
             {
                 Console.WriteLine("AddCategory failed." + e.Message);
+                throw;
             }
         }
         public void AddSubCategory(int category_id, string name)
