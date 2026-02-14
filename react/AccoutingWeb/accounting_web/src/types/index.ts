@@ -4,7 +4,7 @@ export interface AccountingRecord {
   date: string; // ISO 格式或 YYYY-MM-DD
   category_id: number;
   category: string;
-  subCategory_id: number;
+  subcategory_id: number;
   subcategory: string;
   amount: number;
   comment: string;

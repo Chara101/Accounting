@@ -12,8 +12,8 @@ namespace AccountAPI.Models
         public DateTime Date { get; set; } = DateTime.MinValue;
         public int Category_id { get; set; } = 0;
         public string Category { get; set; } = string.Empty;
-        public int SubCategory_id { get; set; } = 0;
-        public string SubCategory { get; set; } = string.Empty;
+        public int Subcategory_id { get; set; } = 0;
+        public string Subcategory { get; set; } = string.Empty;
         public int User_id { get; set; } = 0;
         public string User_name { get; set; } = string.Empty;
         public int Amount { get; set; } = 0;

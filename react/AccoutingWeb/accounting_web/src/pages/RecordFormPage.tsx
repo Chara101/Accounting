@@ -40,7 +40,6 @@ const RecordFormPage: React.FC = () => {
         ]);
         setCategories(cats);
         setSubCategories(subs);
-
         if (isEditMode && id) {
           const record = await getRecordById(Number(id));
           if (record) {
@@ -51,7 +50,7 @@ const RecordFormPage: React.FC = () => {
               comment: record.comment,
               category: record.category,
               category_id: record.category_id,
-              subcategory_id: record.subCategory_id, // 確保這裡對應正確 (API 回傳是大寫 C)
+              subcategory_id: record.subcategory_id,
               subcategory: record.subcategory,
               user_id: 1
             });
@@ -155,7 +154,7 @@ const RecordFormPage: React.FC = () => {
           >
             {/* 未來可優化：根據 category_id 過濾顯示 */}
             {subCategories.map((s) => (
-              <MenuItem key={s.subcategory_id} value={s.subcategory_id}>{s.subcategory}</MenuItem>
+              <MenuItem key={s.subcategory_id} value={s.subcategory_id}>{s.subcategory ?? "錯誤"}</MenuItem>
             ))}
           </Select>
         </FormControl>

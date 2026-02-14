@@ -17,11 +17,11 @@ namespace TestAcounting.DataStorage
         void RmCategory(int id);
         void RmSubCategory(int id);
         List<RecordForm> GetAllRecords();
-        List<RecordForm> GetRecordsBy(RecordForm r);
-        List<RecordForm> GetRecordsBy(RecordForm r1, RecordForm r2);
+        List<RecordForm> GetRecordsBy(Records_search_form r);
+        List<RecordForm> GetRecordsBy(Records_search_form r1, Records_search_form r2);
         List<RecordForm> GetAllTotals();
-        List<RecordForm> GetTotals(RecordForm r);
-        List<RecordForm> GetTotals(RecordForm r1, RecordForm r2);
+        List<RecordForm> GetTotals(Total_search_form r);
+        List<RecordForm> GetTotals(Total_search_form r1, Total_search_form r2);
         List<RecordForm> GetAllCategories();
         List<RecordForm> GetAllSubCategories();
         List<RecordForm> GetAllCategoriesAndSub();

@@ -43,7 +43,7 @@ namespace AccountAPI.DataStorage
                         command.Parameters.Add("@tsid", SqlDbType.NVarChar, 50);
                         command.Parameters["@amount"].Value = pos ? r.Amount : r.Amount * -1;
                         command.Parameters["@tcid"].Value = r.Category_id;
-                        command.Parameters["@tsid"].Value = r.SubCategory_id;
+                        command.Parameters["@tsid"].Value = r.Subcategory_id;
                         affect_row = command.ExecuteNonQuery();
                     }
                     if (affect_row == 0)
@@ -54,7 +54,7 @@ namespace AccountAPI.DataStorage
                             command2.Parameters.Add("@category", SqlDbType.NVarChar, 50);
                             command2.Parameters.Add("@subcategory", SqlDbType.NVarChar, 50);
                             command2.Parameters["@category"].Value = r.Category_id;
-                            command2.Parameters["@subcategory"].Value = r.SubCategory_id;
+                            command2.Parameters["@subcategory"].Value = r.Subcategory_id;
                             command2.ExecuteNonQuery();
                         }
                     }
@@ -89,7 +89,7 @@ namespace AccountAPI.DataStorage
                     command.Parameters.Add("@amount", SqlDbType.Int);
                     command.Parameters.Add("@comment", SqlDbType.NVarChar, 50);
                     command.Parameters["@cid"].Value = r.Category_id;
-                    command.Parameters["@scid"].Value = r.SubCategory_id;
+                    command.Parameters["@scid"].Value = r.Subcategory_id;
                     command.Parameters["@uid"].Value = r.User_id;
                     command.Parameters["@amount"].Value = r.Amount;
                     command.Parameters["@comment"].Value = string.IsNullOrEmpty(r.Comment) ? "nothing" : r.Comment;
@@ -202,12 +202,12 @@ namespace AccountAPI.DataStorage
                         command.Parameters.Add("@cid", SqlDbType.Int);
                         command.Parameters["@cid"].Value = r.Category_id;
                         count++;
-                        if(r.SubCategory_id != 0)
+                        if(r.Subcategory_id != 0)
                         {
                             if (count > 0) command.CommandText += " AND ";
                             command.CommandText += "subcategory_id = @sid";
                             command.Parameters.Add("@sid", SqlDbType.Int);
-                            command.Parameters["@sid"].Value = r.SubCategory_id;
+                            command.Parameters["@sid"].Value = r.Subcategory_id;
                             count++;
                         }
                     }
@@ -326,7 +326,7 @@ namespace AccountAPI.DataStorage
                         Id = 1,
                         Date = DateTime.Now,
                         Category = "TestCategory",
-                        SubCategory = "TestSubCategory",
+                        Subcategory = "TestSubCategory",
                         Amount = 1000,
                         SubCount = 1,
                         SubAmount = 1000,
@@ -343,8 +343,8 @@ namespace AccountAPI.DataStorage
                             Date = Convert.ToDateTime(reader["record_date"]),
                             Category_id = Convert.ToInt32(reader["category_id"]),
                             Category = reader["category_name"].ToString() ?? string.Empty,
-                            SubCategory_id = Convert.ToInt32(reader["subcategory_id"]),
-                            SubCategory = reader["subcategory_name"].ToString() ?? string.Empty,
+                            Subcategory_id = Convert.ToInt32(reader["subcategory_id"]),
+                            Subcategory = reader["subcategory_name"].ToString() ?? string.Empty,
                             Amount = Convert.ToInt32(reader["record_amount"]),
                             Comment = reader["description"].ToString() ?? string.Empty
                         };
@@ -358,7 +358,7 @@ namespace AccountAPI.DataStorage
             }
             return records;
         }
-        public List<RecordForm> GetRecordsBy(RecordForm r)
+        public List<RecordForm> GetRecordsBy(Records_search_form r)
         {
             List<RecordForm> records = new List<RecordForm>();
             try
@@ -404,12 +404,12 @@ namespace AccountAPI.DataStorage
                         command.Parameters.Add("@cid", SqlDbType.Int);
                         command.Parameters["@cid"].Value = r.Category_id;
                         count++;
-                        if(r.SubCategory_id > 0)
+                        if(r.Subcategory_id > 0)
                         {
                             if (count > 0) command.CommandText += " AND ";
                             command.CommandText += "R.subcategory_id = @sid";
                             command.Parameters.Add("@sid", SqlDbType.Int, 50);
-                            command.Parameters["@sid"].Value = r.SubCategory_id;
+                            command.Parameters["@sid"].Value = r.Subcategory_id;
                             count++;
                         }
                     }
@@ -440,8 +440,8 @@ namespace AccountAPI.DataStorage
                                 Date = Convert.ToDateTime(reader["record_date"]),
                                 Category_id = Convert.ToInt32(reader["category_id"]),
                                 Category = reader["category_name"].ToString() ?? "",
-                                SubCategory_id = Convert.ToInt32(reader["subcategory_id"]),
-                                SubCategory = reader["subcategory_name"].ToString() ?? "",
+                                Subcategory_id = Convert.ToInt32(reader["subcategory_id"]),
+                                Subcategory = reader["subcategory_name"].ToString() ?? "",
                                 Amount = Convert.ToInt32(reader["record_amount"]),
                                 Comment = reader["description"].ToString() ?? ""
                             };
@@ -456,7 +456,7 @@ namespace AccountAPI.DataStorage
             }
             return records;
         }
-        public List<RecordForm> GetRecordsBy(RecordForm r1, RecordForm r2)
+        public List<RecordForm> GetRecordsBy(Records_search_form r1, Records_search_form r2)
         {
             List<RecordForm> records = new List<RecordForm>();
             try
@@ -506,14 +506,14 @@ namespace AccountAPI.DataStorage
                         command.Parameters.Add("@cid2", SqlDbType.Int);
                         command.Parameters["@cid2"].Value = r2.Category_id;
                         count++;
-                        if (r1.SubCategory_id > 0 && r2.SubCategory_id > 0)
+                        if (r1.Subcategory_id > 0 && r2.Subcategory_id > 0)
                         {
                             if (count > 0) command.CommandText += " AND ";
                             command.CommandText += "R.subcategory_id BETWEEN @sid AND @sid2";
                             command.Parameters.Add("@sid", SqlDbType.Int);
-                            command.Parameters["@sid"].Value = r1.SubCategory_id;
+                            command.Parameters["@sid"].Value = r1.Subcategory_id;
                             command.Parameters.Add("@sid2", SqlDbType.Int);
-                            command.Parameters["@sid2"].Value = r2.SubCategory_id;
+                            command.Parameters["@sid2"].Value = r2.Subcategory_id;
                             count++;
                         }
                     }
@@ -547,8 +547,8 @@ namespace AccountAPI.DataStorage
                                 Date = Convert.ToDateTime(reader["record_date"]),
                                 Category_id = Convert.ToInt32(reader["category_id"]),
                                 Category = reader["category_name"].ToString() ?? "",
-                                SubCategory_id = Convert.ToInt32(reader["subcategory_id"]),
-                                SubCategory = reader["subcategory_name"].ToString() ?? "",
+                                Subcategory_id = Convert.ToInt32(reader["subcategory_id"]),
+                                Subcategory = reader["subcategory_name"].ToString() ?? "",
                                 Amount = Convert.ToInt32(reader["record_amount"]),
                                 Comment = reader["description"].ToString() ?? ""
                             };
@@ -600,7 +600,7 @@ namespace AccountAPI.DataStorage
                                 Id = Convert.ToInt32(reader["record_id"]),
                                 Date = Convert.ToDateTime(reader["record_date"]),
                                 Category_id = Convert.ToInt32(reader["category_id"]),
-                                SubCategory_id = Convert.ToInt32(reader["subcategory_id"]),
+                                Subcategory_id = Convert.ToInt32(reader["subcategory_id"]),
                                 SubCount = Convert.ToInt32(reader["subcount"]),
                                 SubAmount = Convert.ToInt32(reader["subamount"])
                             };
@@ -615,7 +615,7 @@ namespace AccountAPI.DataStorage
             }
             return totals;
         }
-        public List<RecordForm> GetTotals(RecordForm r)
+        public List<RecordForm> GetTotals(Total_search_form data)
         {
             List<RecordForm> totals = new List<RecordForm>();
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
@@ -629,45 +629,45 @@ namespace AccountAPI.DataStorage
             string connectionString = builder.ConnectionString;
             var connection = new SqlConnection(connectionString);
             connection.Open();
-            string sql = "SELECT\r\n\trecord_id,\r\n\trecord_date, \r\n\tcategory_id, \r\n\tsubcategory_id, \r\n\tsubcount,\r\n\tsubamount\r\nFROM Totals\r\nWHERE ";
+            string sql = "SELECT TOP 100\r\n\trecord_id,\r\n\trecord_date, \r\n\tcategory_id, \r\n\tsubcategory_id, \r\n\tsubcount,\r\n\tsubamount\r\nFROM Totals\r\nWHERE ";
             int count = 0;
             try
             {
                 using(var command = new SqlCommand(sql, connection))
                 {
-                    if(r.Id > 0)
+                    if(data.Id > 0)
                     {
                         if(count > 0) command.CommandText += " AND ";
                         command.CommandText += "record_id = @id";
                         command.Parameters.Add("@id", SqlDbType.Int);
-                        command.Parameters["@id"].Value = r.Id;
+                        command.Parameters["@id"].Value = data.Id;
                         count++;
                     }
-                    if (r.Date != DateTime.MinValue)
+                    if (data.Date != DateTime.MinValue)
                     {
                         if(count > 0) command.CommandText += " AND ";
                         command.CommandText += "record_date = @date";
                         command.Parameters.Add("@date", SqlDbType.Date);
-                        command.Parameters["@date"].Value = r.Date.Date;
+                        command.Parameters["@date"].Value = data.Date.Date;
                         count++;
                     }
-                    if (r.Category_id > 0)
+                    if (data.Category_id > 0)
                     {
                         if (count > 0) command.CommandText += " AND ";
                         command.CommandText += "category_id = @cid";
                         command.Parameters.Add("@cid", SqlDbType.Int);
-                        command.Parameters["@cid"].Value = r.Category;
+                        command.Parameters["@cid"].Value = data.Category_id;
                         count++;
-                        if (r.SubCategory_id > 0)
-                        {
-                            if (count > 0) command.CommandText += " AND ";
-                            command.CommandText += "subcategory_id = @sid";
-                            command.Parameters.Add("@sid", SqlDbType.Int);
-                            command.Parameters["@subcategory_id"].Value = r.SubCategory;
-                            count++;
-                        }
                     }
-                    if(count == 0) throw new ArgumentException("Invalid argument for search.");
+                    if (data.Subcategory_id > 0)
+                    {
+                        if (count > 0) command.CommandText += " AND ";
+                        command.CommandText += "subcategory_id = @sid";
+                        command.Parameters.Add("@sid", SqlDbType.Int);
+                        command.Parameters["@subcategory_id"].Value = data.Subcategory_id;
+                        count++;
+                    }
+                    if (count == 0) throw new ArgumentException("Invalid argument for search.");
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while(reader.Read())
@@ -677,7 +677,7 @@ namespace AccountAPI.DataStorage
                                 Id = Convert.ToInt32(reader["record_id"]),
                                 Date = Convert.ToDateTime(reader["record_date"]),
                                 Category_id = Convert.ToInt32(reader["category_id"]),
-                                SubCategory_id = Convert.ToInt32(reader["subcategory_id"]),
+                                Subcategory_id = Convert.ToInt32(reader["subcategory_id"]),
                                 SubCount = Convert.ToInt32(reader["subcount"]),
                                 SubAmount = Convert.ToInt32(reader["subamount"])
                             };
@@ -693,7 +693,7 @@ namespace AccountAPI.DataStorage
             return totals;
         }
 
-        public List<RecordForm> GetTotals(RecordForm r1, RecordForm r2)
+        public List<RecordForm> GetTotals(Total_search_form form1, Total_search_form form2)
         {
             List<RecordForm> totals = new List<RecordForm>();
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
@@ -713,64 +713,64 @@ namespace AccountAPI.DataStorage
             {
                 using (var command = new SqlCommand(sql, connection))
                 {
-                    if(r1.Id > 0 && r2.Id > 0)
+                    if(form1.Id > 0 && form2.Id > 0)
                     {
                         if(count > 0) command.CommandText += " AND ";
                         command.CommandText += "record_id BETWEEN @id AND @id2";
                         command.Parameters.Add("@id", SqlDbType.Int);
-                        command.Parameters["@id"].Value = r1.Id;
+                        command.Parameters["@id"].Value = form1.Id;
                         command.Parameters.Add("@id2", SqlDbType.Int);
-                        command.Parameters["@id2"].Value = r2.Id;
+                        command.Parameters["@id2"].Value = form2.Id;
                         count++;
                     }
-                    if (r1.Date > DateTime.MinValue.Date && r2.Date >= r1.Date)
+                    if (form1.Date > DateTime.MinValue.Date && form2.Date >= form1.Date)
                     {
                         if (count > 0) command.CommandText += " AND ";
                         command.CommandText += "R.record_date BETWEEN @date AND @date2";
                         command.Parameters.Add("@date", SqlDbType.Date);
-                        command.Parameters["@date"].Value = r1.Date.Date;
+                        command.Parameters["@date"].Value = form1.Date.Date;
                         command.Parameters.Add("@date2", SqlDbType.Date);
-                        command.Parameters["@date2"].Value = r2.Date.Date;
+                        command.Parameters["@date2"].Value = form2.Date.Date;
                         count++;
                     }
-                    if (r1.Category_id > 0 && r2.Category_id > 0)
+                    if (form1.Category_id > 0 && form2.Category_id > 0)
                     {
                         if (count > 0) command.CommandText += " AND ";
                         command.CommandText += "R.category_id BETWEEN @cid AND @cid2";
                         command.Parameters.Add("@cid", SqlDbType.Int);
-                        command.Parameters["@cid"].Value = r1.Category_id;
+                        command.Parameters["@cid"].Value = form1.Category_id;
                         command.Parameters.Add("@cid2", SqlDbType.Int);
-                        command.Parameters["@cid2"].Value = r2.Category_id;
+                        command.Parameters["@cid2"].Value = form2.Category_id;
                         count++;
-                        if (r1.SubCategory_id > 0 && r2.SubCategory_id > 0)
-                        {
-                            if (count > 0) command.CommandText += " AND ";
-                            command.CommandText += "R.subcategory_id BETWEEN @sid AND @sid2";
-                            command.Parameters.Add("@sid", SqlDbType.Int);
-                            command.Parameters["@sid"].Value = r1.SubCategory_id;
-                            command.Parameters.Add("@sid2", SqlDbType.Int);
-                            command.Parameters["@sid2"].Value = r2.SubCategory_id;
-                            count++;
-                        }
                     }
-                    if(r1.SubCount > 0 && r2.SubCount > 0)
+                    if (form1.Subcategory_id > 0 && form2.Subcategory_id > 0)
+                    {
+                        if (count > 0) command.CommandText += " AND ";
+                        command.CommandText += "R.subcategory_id BETWEEN @sid AND @sid2";
+                        command.Parameters.Add("@sid", SqlDbType.Int);
+                        command.Parameters["@sid"].Value = form1.Subcategory_id;
+                        command.Parameters.Add("@sid2", SqlDbType.Int);
+                        command.Parameters["@sid2"].Value = form2.Subcategory_id;
+                        count++;
+                    }
+                    if (form1.SubCount > 0 && form2.SubCount > 0)
                     {
                         if (count > 0) command.CommandText += " AND ";
                         command.CommandText += "subcount BETWEEN @subcount AND @subcount2";
                         command.Parameters.Add("@subcount", SqlDbType.Int);
-                        command.Parameters["@subcount"].Value = r1.SubCount;
+                        command.Parameters["@subcount"].Value = form1.SubCount;
                         command.Parameters.Add("@subcount2", SqlDbType.Int);
-                        command.Parameters["@subcount2"].Value = r2.SubCount;
+                        command.Parameters["@subcount2"].Value = form2.SubCount;
                         count++;
                     }
-                    if (r1.Amount > 0 && r2.Amount > 0)
+                    if (form1.SubAmount > 0 && form2.SubAmount > 0)
                     {
                         if (count > 0) command.CommandText += " AND ";
                         command.CommandText += "subamount BETWEEN @amount AND @amount2";
                         command.Parameters.Add("@amount", SqlDbType.Int);
-                        command.Parameters["@amount"].Value = r1.Amount;
+                        command.Parameters["@amount"].Value = form1.SubAmount;
                         command.Parameters.Add("@amount2", SqlDbType.Int);
-                        command.Parameters["@amount2"].Value = r2.Amount;
+                        command.Parameters["@amount2"].Value = form2.SubAmount;
                         count++;
                     }
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -782,7 +782,7 @@ namespace AccountAPI.DataStorage
                                 Id = Convert.ToInt32(reader["record_id"]),
                                 Date = Convert.ToDateTime(reader["record_date"]),
                                 Category_id = Convert.ToInt32(reader["category_id"]),
-                                SubCategory_id = Convert.ToInt32(reader["subcategory_id"]),
+                                Subcategory_id = Convert.ToInt32(reader["subcategory_id"]),
                                 SubCount = Convert.ToInt32(reader["subcount"]),
                                 SubAmount = Convert.ToInt32(reader["subamount"])
                             };
@@ -863,8 +863,8 @@ namespace AccountAPI.DataStorage
                         {
                             RecordForm record = new RecordForm
                             {
-                                Category_id = Convert.ToInt32(reader["subcategory_id"]),
-                                Category = reader["subcategory_name"].ToString() ?? ""
+                                Subcategory_id = Convert.ToInt32(reader["subcategory_id"]),
+                                Subcategory = reader["subcategory_name"].ToString() ?? ""
                             };
                             result.Add(record);
                         }
@@ -904,7 +904,7 @@ namespace AccountAPI.DataStorage
                             RecordForm record = new RecordForm
                             {
                                 Category_id = Convert.ToInt32(reader["category_id"]),
-                                SubCategory_id = Convert.ToInt32(reader["subcategory_id"])
+                                Subcategory_id = Convert.ToInt32(reader["subcategory_id"])
                             };
                             result.Add(record);
                         }
@@ -959,12 +959,12 @@ namespace AccountAPI.DataStorage
                         command.Parameters.Add("@category_id" + "2", SqlDbType.NVarChar, 50);
                         command.Parameters["@category_id" + "2"].Value = r.Category_id;
                         count++;
-                        if (r.SubCategory_id > 0)
+                        if (r.Subcategory_id > 0)
                         {
                             if (count > 0) command.CommandText += " AND ";
                             command.CommandText += _condition["subcategory_id"] + "2";
                             command.Parameters.Add("@subcategory_id" + "2", SqlDbType.NVarChar, 50);
-                            command.Parameters["@subcategory_id" + "2"].Value = r.SubCategory_id;
+                            command.Parameters["@subcategory_id" + "2"].Value = r.Subcategory_id;
                             count++;
                         }
                     }
@@ -984,7 +984,7 @@ namespace AccountAPI.DataStorage
                     command.Parameters.Add("@ndescription", SqlDbType.NVarChar, 50);
                     command.Parameters["@ndate"].Value = content.Date.Date;
                     command.Parameters["@ncategory_id"].Value = content.Category_id;
-                    command.Parameters["@nsubcategory_id"].Value = content.SubCategory_id;
+                    command.Parameters["@nsubcategory_id"].Value = content.Subcategory_id;
                     command.Parameters["@namount"].Value = content.Amount;
                     command.Parameters["@ndescription"].Value = content.Comment ?? "";
                     command.ExecuteNonQuery();

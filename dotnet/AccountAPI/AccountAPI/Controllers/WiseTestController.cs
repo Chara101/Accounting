@@ -15,9 +15,13 @@ namespace AccountAPI.Controllers
     [ApiController]
     public class WiseTestController : ControllerBase
     {
-        IDataStorage _db = new MssqlCtrl();
+        IDataStorage _db;
+        public WiseTestController()
+        {
+            _db = new MssqlCtrl();
+        }
         // GET: api/<WiseTestController>
-        [HttpGet("records")]
+        [HttpGet("records/all")]
         public IActionResult GetAllRecord()
         {
             List<RecordForm> result = new List<RecordForm>();
@@ -32,12 +36,12 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpGet("records/match")]
-        public IActionResult GetRecord([FromQuery] RecordForm r)
+        [HttpGet("records/find")]
+        public IActionResult GetRecord([FromQuery] Records_search_form data)
         {
             try
             {
-                List<RecordForm> result = _db.GetRecordsBy(r);
+                List<RecordForm> result = _db.GetRecordsBy(data);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -46,12 +50,12 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpPost("records/match/range")]
-        public IActionResult GetRecordInRange([FromBody] BandRecord r)
+        [HttpPost("records/find/range")]
+        public IActionResult GetRecordInRange([FromBody] Record_search_range_form data)
         {
             try
             {
-                List<RecordForm>  result = _db.GetRecordsBy(r.r1, r.r2);
+                List<RecordForm>  result = _db.GetRecordsBy(data.edge1, data.edge2);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -74,11 +78,11 @@ namespace AccountAPI.Controllers
             }
         }
         [HttpPost("totals/match")]
-        public IActionResult GetTotalsBy([FromBody] RecordForm r)
+        public IActionResult GetTotalsBy([FromBody] Total_search_form data)
         {
             try
             {
-                List<RecordForm> result = _db.GetTotals(r);
+                List<RecordForm> result = _db.GetTotals(data);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -87,11 +91,11 @@ namespace AccountAPI.Controllers
             }
         }
         [HttpPost("totals/match/range")]
-        public IActionResult GetTotalsInRange([FromBody] BandRecord r)
+        public IActionResult GetTotalsInRange([FromBody] Total_search_range_form data)
         {
             try
             {
-                List<RecordForm> result = _db.GetTotals(r.r1, r.r2);
+                List<RecordForm> result = _db.GetTotals(data.Form1, data.Form2);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -100,7 +104,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpPost("record")]
+        [HttpPost("record/add")]
         public IActionResult AddObject([FromBody] RecordForm value)
         {
             try
@@ -114,7 +118,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpPut("record/{id:int:min(1)}")]
+        [HttpPut("record/{id:int:min(1)}/modify")]
         public IActionResult Renew([FromBody] BandRecord r)
         {
             try
@@ -129,7 +133,7 @@ namespace AccountAPI.Controllers
         }
 
         // DELETE api/<WiseTestController>/5
-        [HttpDelete("record/{id:int:min(1)}")]
+        [HttpDelete("record/{id:int:min(1)}/delete")]
         public IActionResult Delete(int id)
         {
             try
@@ -143,7 +147,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpPost("category")]
+        [HttpPost("category/add")]
         public IActionResult AddCategory([FromBody] string category)
         {
             try
@@ -157,7 +161,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpDelete("category/{id:int:min(1)}")]
+        [HttpDelete("category/{id:int:min(1)}/delete")]
         public IActionResult DeleteCategory(int id)
         {
             try
@@ -171,12 +175,12 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpPost("subcategory")]
-        public IActionResult AddSubCategory([FromBody] int category_id, [FromQuery] string new_sub_name)
+        [HttpPost("subcategory/add")]
+        public IActionResult AddSubCategory([FromBody] Subcategory_form sf)
         {
             try
             {
-                _db.AddSubCategory(category_id, new_sub_name); //warning 要對MssqlCtrl做修改 才能正確使用
+                _db.AddSubCategory(sf.Category_id, sf.Subcategory_name); //warning 要對MssqlCtrl做修改 才能正確使用
                 return Ok();
             }
             catch(Exception ex)
@@ -185,7 +189,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpDelete("subcategory/{id:int:min(1)}")]
+        [HttpDelete("subcategory/{id:int:min(1)}/delete")]
         public IActionResult DeleteSubCategory(int id)
         {
             try
@@ -199,7 +203,7 @@ namespace AccountAPI.Controllers
             }
         }
 
-        [HttpGet("categories")]
+        [HttpGet("categories/all")]
         public IActionResult GetAllCategories()
         {
             try
@@ -213,7 +217,7 @@ namespace AccountAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("subcategories")]
+        [HttpGet("subcategories/all")]
         public IActionResult GetAllSubCategories()
         {
             try
