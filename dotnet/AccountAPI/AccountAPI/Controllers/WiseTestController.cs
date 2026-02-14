@@ -119,11 +119,11 @@ namespace AccountAPI.Controllers
         }
 
         [HttpPut("record/{id:int:min(1)}/modify")]
-        public IActionResult Renew([FromBody] BandRecord r)
+        public IActionResult Renew(int id, [FromBody] RecordForm content)
         {
             try
             {
-                _db.Update(r.r1, r.r2);
+                _db.Update(new RecordForm { Id = id }, content);
                 return Ok();
             }
             catch (Exception ex)

@@ -917,7 +917,7 @@ namespace AccountAPI.DataStorage
             }
             return result;
         }
-        public void Update(RecordForm r, RecordForm content)
+        public void Update(RecordForm target, RecordForm content)
         {
             try
             {
@@ -932,63 +932,47 @@ namespace AccountAPI.DataStorage
                 string connectionString = builder.ConnectionString;
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
-                string sql = "UPDATE Record SET record_date = @ndate, category_id = @ncategory_id, subcategory_id = @nsubcategory_id, record_amount = @namount, description = @ndescription where ";
-                int count = 0;
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    if (r.Id > 0)
+                string sql_search = "SELECT TOP (1000) [record_id]\r\n      ,[record_date]\r\n      ,[category_id]\r\n      ,[subcategory_id]\r\n      ,[user_id]\r\n      ,[record_amount]\r\n      ,[description]\r\n  FROM [Cash].[dbo].[Record] WHERE record_id = @id";
+                RecordForm search_result = new RecordForm();
+                using (SqlCommand command = new SqlCommand(sql_search, connection))
                     {
-                        if(count > 0) command.CommandText += " AND ";
-                        command.CommandText += _condition["id"] + "2";
-                        command.Parameters.Add("@id" + "2", SqlDbType.Int);
-                        command.Parameters["@id" + "2"].Value = r.Id;
-                        count++;
-                    }
-                    if (r.Date > DateTime.MinValue)
-                    {
-                        if (count > 0) command.CommandText += " AND ";
-                        command.CommandText += _condition["time"] + "2";
-                        command.Parameters.Add("@date" + "2", SqlDbType.Date);
-                        command.Parameters["@date" + "2"].Value = r.Date.Date;
-                        count++;
-                    }
-                    if (r.Category_id > 0)
-                    {
-                        if (count > 0) command.CommandText += " AND ";
-                        command.CommandText += _condition["category_id"] + "2";
-                        command.Parameters.Add("@category_id" + "2", SqlDbType.NVarChar, 50);
-                        command.Parameters["@category_id" + "2"].Value = r.Category_id;
-                        count++;
-                        if (r.Subcategory_id > 0)
+                        command.Parameters.Add("@id", SqlDbType.Int);
+                        command.Parameters["@id"].Value = target.Id;
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            if (count > 0) command.CommandText += " AND ";
-                            command.CommandText += _condition["subcategory_id"] + "2";
-                            command.Parameters.Add("@subcategory_id" + "2", SqlDbType.NVarChar, 50);
-                            command.Parameters["@subcategory_id" + "2"].Value = r.Subcategory_id;
-                            count++;
+                            if (!reader.HasRows) throw new ArgumentException("Record not found.");
+                            while (reader.Read())
+                            {
+                                search_result = new RecordForm
+                                {
+                                    Id = Convert.ToInt32(reader["record_id"]),
+                                    Date = Convert.ToDateTime(reader["record_date"]),
+                                    Category_id = Convert.ToInt32(reader["category_id"]),
+                                    Subcategory_id = Convert.ToInt32(reader["subcategory_id"]),
+                                    User_id = Convert.ToInt32(reader["user_id"]),
+                                    Amount = Convert.ToInt32(reader["record_amount"])
+                                };
+                            }
                         }
-                    }
-                    if (r.Amount > 0)
-                    {
-                        if (count > 0) command.CommandText += " AND ";
-                        command.CommandText += _condition["money"] + "2";
-                        command.Parameters.Add("@amount" + "2", SqlDbType.Int);
-                        command.Parameters["@amount" + "2"].Value = r.Amount;
-                        count++;
-                    }
-                    if(count == 0) throw new ArgumentException("Invalid argument for update.");
+                }
+                Update_totals(search_result, false);
+                string sql_update = "UPDATE Record SET record_date = @ndate, category_id = @ncategory_id, subcategory_id = @nsubcategory_id, record_amount = @namount, description = @ndescription where record_id = @id";
+                using (SqlCommand command = new SqlCommand(sql_update, connection))
+                {
+                    command.Parameters.Add("@id", SqlDbType.Int);
                     command.Parameters.Add("@ndate", SqlDbType.Date);
                     command.Parameters.Add("@ncategory_id", SqlDbType.Int);
                     command.Parameters.Add("@nsubcategory_id", SqlDbType.Int);
                     command.Parameters.Add("@namount", SqlDbType.Int);
                     command.Parameters.Add("@ndescription", SqlDbType.NVarChar, 50);
+
+                    command.Parameters["@id"].Value = target.Id;
                     command.Parameters["@ndate"].Value = content.Date.Date;
                     command.Parameters["@ncategory_id"].Value = content.Category_id;
                     command.Parameters["@nsubcategory_id"].Value = content.Subcategory_id;
                     command.Parameters["@namount"].Value = content.Amount;
                     command.Parameters["@ndescription"].Value = content.Comment ?? "";
                     command.ExecuteNonQuery();
-                    Update_totals(r, false);
                     Update_totals(content, true);
                 }
             }
