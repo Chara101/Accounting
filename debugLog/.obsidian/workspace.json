@@ -1,0 +1,200 @@
+{
+  "main": {
+    "id": "f97af052f2314227",
+    "type": "split",
+    "children": [
+      {
+        "id": "1fc948d552f170d0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5f6803efa8ef7940",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Debug Log.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Debug Log"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "66012acc16cff099",
+    "type": "split",
+    "children": [
+      {
+        "id": "8597ca404da13ff3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c1f4b10bc84346d0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "檔案瀏覽器"
+            }
+          },
+          {
+            "id": "46a7ce3ed7a94858",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "6312af4091242229",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "27755aaccb4e5e7c",
+    "type": "split",
+    "children": [
+      {
+        "id": "abfbadd1dcf03d39",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d55f09d8c648edc5",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "API Log.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for API Log"
+            }
+          },
+          {
+            "id": "6eff4d626ac94449",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "API Log.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from API Log"
+            }
+          },
+          {
+            "id": "15d160f2bbf5f608",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "238726062942508f",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "4d00d29d79a40529",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "API Log.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of API Log"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:開啟快速切換": false,
+      "graph:查看關聯圖": false,
+      "canvas:建立新畫布": false,
+      "daily-notes:開啟今天的每日筆記": false,
+      "templates:插入模板": false,
+      "command-palette:開啟命令面板": false,
+      "bases:建立新的 base": false
+    }
+  },
+  "active": "5f6803efa8ef7940",
+  "lastOpenFiles": [
+    "template/Problem_v1.md",
+    "template/Log_v1.md",
+    "Debug Log.md",
+    "{24B7A5E3-EAE0-4DFA-8F15-6E3BD2B00CED} 1.png",
+    "Front Log.md",
+    "{24B7A5E3-EAE0-4DFA-8F15-6E3BD2B00CED}.png",
+    "![[{24B7A5E3-EAE0-4DFA-8F15-6E3BD2B00CED}.png]].md",
+    "template/Date.md",
+    "template",
+    "新增資料夾",
+    "Untitled.md"
+  ]
+}

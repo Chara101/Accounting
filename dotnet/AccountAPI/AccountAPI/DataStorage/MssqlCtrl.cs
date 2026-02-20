@@ -80,14 +80,16 @@ namespace AccountAPI.DataStorage
                 string connectionString = builder.ConnectionString;
                 using var connection = new SqlConnection(connectionString);
                 connection.Open();
-                string sql = "insert into Record (category_id, subcategory_id, user_id, record_amount, description) values ( @cid, @scid, @uid, @amount, @comment);";
+                string sql = "insert into Record (record_date, category_id, subcategory_id, user_id, record_amount, description) values ( @date, @cid, @scid, @uid, @amount, @comment);";
                 using(SqlCommand command = new SqlCommand(sql, connection))
                 {
+                    command.Parameters.Add("@date", SqlDbType.Date);
                     command.Parameters.Add("@cid", SqlDbType.Int);
                     command.Parameters.Add("@scid", SqlDbType.Int);
                     command.Parameters.Add("@uid", SqlDbType.Int);
                     command.Parameters.Add("@amount", SqlDbType.Int);
                     command.Parameters.Add("@comment", SqlDbType.NVarChar, 50);
+                    command.Parameters["@date"].Value = (r.Date == DateTime.MinValue ? DateTime.Now.Date : r.Date.Date);
                     command.Parameters["@cid"].Value = r.Category_id;
                     command.Parameters["@scid"].Value = r.Subcategory_id;
                     command.Parameters["@uid"].Value = r.User_id;
@@ -104,6 +106,7 @@ namespace AccountAPI.DataStorage
         }
         public void AddCategory(string name)
         {
+            if(name == string.Empty) throw new ArgumentException("Category name cannot be empty.");
             try
             {
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
@@ -319,37 +322,20 @@ namespace AccountAPI.DataStorage
 
                 SqlDataReader reader = command.ExecuteReader();
 
-                if (!reader.HasRows)
+                while (reader.Read())
                 {
-                    records.Add(new RecordForm()
+                    RecordForm record = new RecordForm
                     {
-                        Id = 1,
-                        Date = DateTime.Now,
-                        Category = "TestCategory",
-                        Subcategory = "TestSubCategory",
-                        Amount = 1000,
-                        SubCount = 1,
-                        SubAmount = 1000,
-                        Comment = "TestComment"
-                    });
-                }
-                else
-                {
-                    while (reader.Read())
-                    {
-                        RecordForm record = new RecordForm
-                        {
-                            Id = Convert.ToInt32(reader["record_id"]),
-                            Date = Convert.ToDateTime(reader["record_date"]),
-                            Category_id = Convert.ToInt32(reader["category_id"]),
-                            Category = reader["category_name"].ToString() ?? string.Empty,
-                            Subcategory_id = Convert.ToInt32(reader["subcategory_id"]),
-                            Subcategory = reader["subcategory_name"].ToString() ?? string.Empty,
-                            Amount = Convert.ToInt32(reader["record_amount"]),
-                            Comment = reader["description"].ToString() ?? string.Empty
-                        };
-                        records.Add(record);
-                    }
+                        Id = Convert.ToInt32(reader["record_id"]),
+                        Date = Convert.ToDateTime(reader["record_date"]),
+                        Category_id = Convert.ToInt32(reader["category_id"]),
+                        Category = reader["category_name"].ToString() ?? string.Empty,
+                        Subcategory_id = Convert.ToInt32(reader["subcategory_id"]),
+                        Subcategory = reader["subcategory_name"].ToString() ?? string.Empty,
+                        Amount = Convert.ToInt32(reader["record_amount"]),
+                        Comment = reader["description"].ToString() ?? string.Empty
+                    };
+                    records.Add(record);
                 }
             }
             catch(Exception e)

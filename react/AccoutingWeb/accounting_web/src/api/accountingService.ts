@@ -98,10 +98,10 @@ export const getAllRelations = (): Promise<CategoryRelation[]> => {
 };
 
 // 2. 新增主科目
-export const addCategory = (name: string): Promise<void> => {
+export const addCategory = (name: string): Promise<void> => { //error: 可能有問題，無法新增
   return apiFetch<void>('category/add', {
     method: 'POST',
-    body: JSON.stringify({ category: name }),
+    body: JSON.stringify({ category_name: name }),
   });
 };
 
@@ -117,7 +117,7 @@ export const deleteCategory = (id: number): Promise<void> => {
 export const addSubCategory = (categoryId: number, name: string): Promise<void> => {
   return apiFetch<void>('subcategory/add', {
     method: 'POST',
-    body: JSON.stringify({ category_id: categoryId, subcategory: name }),
+    body: JSON.stringify({ category_id: categoryId, subcategory_name: name }),
   });
 };
 

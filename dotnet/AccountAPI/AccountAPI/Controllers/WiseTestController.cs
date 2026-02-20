@@ -24,10 +24,9 @@ namespace AccountAPI.Controllers
         [HttpGet("records/all")]
         public IActionResult GetAllRecord()
         {
-            List<RecordForm> result = new List<RecordForm>();
             try
             {
-                result = _db.GetAllRecords();
+                List<RecordForm>  result = _db.GetAllRecords();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -148,11 +147,11 @@ namespace AccountAPI.Controllers
         }
 
         [HttpPost("category/add")]
-        public IActionResult AddCategory([FromBody] string category)
+        public IActionResult AddCategory([FromBody] Category_form data)
         {
             try
             {
-                _db.AddCategory(category);
+                _db.AddCategory(data.category_name);
                 return Ok();
             }
             catch (Exception ex)
@@ -180,6 +179,10 @@ namespace AccountAPI.Controllers
         {
             try
             {
+                if(sf.Subcategory_name == String.Empty)
+                {
+                    return BadRequest("subcategory name can't be empty");
+                } 
                 _db.AddSubCategory(sf.Category_id, sf.Subcategory_name); //warning 要對MssqlCtrl做修改 才能正確使用
                 return Ok();
             }
